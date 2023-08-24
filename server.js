@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 
 // PATH TO FILES IN THE PUBLIC FOLDER CALLING THE INDEX/NOTES HTML
 /////////////////
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '/')));
 
                                             /////////////////
                                             //DEFINE ROUTES//
@@ -25,7 +25,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // TO FETCH NOTES HTML
 /////////////////
 app.get('/notes', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'notes.html'));
+    res.sendFile(path.join(__dirname, 'notes.html'));
 });
 // TO FETCH NOTES FROM DB
 /////////////////
