@@ -44,6 +44,66 @@ app.get('/api/notes', (req, res) => {
     });
 });
 
+                                            /////////////////
+                                            //     POST    //
+                                            /////////////////
+
+/////////////////
+//DEFINE POSTING NOTES ROUTE TO WRITE ON DB
+/////////////////
+app.post('/api/notes', (req, res) => {
+    const notesPath = path.join(__dirname, 'api', 'notes.json');
+    fs.readFile(notesPath, 'utf8', (err, data) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Internal server error' });
+        } else {
+            const notes = JSON.parse(data); //PARSE THE NOTE INTO A JS OBJECT AFTER READING DB CONTENT
+            const newNote = req.body;
+            newNote.id = notes.length + 1; // ID FOR NOTES TO HANDLE SAVING/DELETING
+            notes.push(newNote); // ADD NEW NOTE TO THE DB
+            fs.writeFile(notesPath, JSON.stringify(notes), 'utf8', writeErr => {
+                if (writeErr) {
+                    console.error(writeErr);
+                    res.status(500).json({ error: 'Internal server error' });
+                } else {
+                    res.json({ message: 'Note saved' });
+                }
+            });
+        }
+    });
+});
+
+                                            /////////////////
+                                            //    DELETE   //
+                                            /////////////////
+//PATH TO DELETE BY ID PER INDEX JS
+app.delete('/api/notes/:id', (req, res) => {
+    const notesFilePath = path.join(__dirname, 'api', 'notes.json');
+    fs.readFile(notesFilePath, 'utf8', (err, data) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Internal server error' });
+        } else {
+            const notes = JSON.parse(data);
+            //REQUIRE THE NOTE ID PARAMETER
+            const noteId = parseInt(req.params.id, 10);
+            //REMOVE NOTE FILTERING ALL NOTES WITH A DIFFERENT ID THAN THE "noteID"
+            const updatedNotes = notes.filter(note => note.id !== noteId);
+            //WRITE UPDATED NOTES
+            fs.writeFile(notesFilePath, JSON.stringify(updatedNotes), 'utf8', writeErr => {
+                if (writeErr) {
+                    console.error(writeErr);
+                    res.status(500).json({ error: 'Internal server error' });
+                } else {
+                    res.json({ message: 'Note deleted successfully' });
+                }
+            });
+        }
+    });
+});
+
+
 
 app.listen(PORT, () => {
     console.log('Server is running on port 3001');
