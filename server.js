@@ -2,7 +2,7 @@
 /////////////////
 const express = require('express');
 const app = express();
-const PORT = 3001;
+//const PORT = 3001; deleted to listen heroku port
 
 //REQUIRE PATH MODULE TO CALL FILES & FS FOR SYSTEM INTERACTION
 /////////////////
@@ -105,6 +105,4 @@ app.delete('/api/notes/:id', (req, res) => {
 
 
 
-app.listen(PORT, () => {
-    console.log('Server is running on port 3001');
-});
+app.listen(process.env.PORT || 5000);
